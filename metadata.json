@@ -1,0 +1,7 @@
+{
+  "name": "Social Task Tracker",
+  "description": "A personal mobile-first web app to manage and track social media posting tasks across multiple platforms with AI-powered task recognition and smart link parsing.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
