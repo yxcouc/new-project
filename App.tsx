@@ -1,13 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import Layout from './components/Layout';
-import TaskList from './views/TaskList';
-import PostHistory from './views/PostHistory';
-import Dashboard from './views/Dashboard';
-import TaskForm from './components/TaskForm';
-import PostForm from './components/PostForm';
-import { Task, Post, TaskStatus, PostStatus } from './types';
+import Layout from './components/Layout.tsx';
+import TaskList from './views/TaskList.tsx';
+import PostHistory from './views/PostHistory.tsx';
+import Dashboard from './views/Dashboard.tsx';
+import TaskForm from './components/TaskForm.tsx';
+import PostForm from './components/PostForm.tsx';
+import { Task, Post, TaskStatus, PostStatus } from './types.ts';
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>(() => {

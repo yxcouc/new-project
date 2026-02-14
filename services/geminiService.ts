@@ -1,11 +1,9 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import { Platform, ContentType } from "../types";
+import { Platform, ContentType } from "../types.ts";
 
 // 初始化 Gemini AI 客户端
 const ai = new GoogleGenAI({ 
-  apiKey: process.env.API_KEY || '',
-  baseUrl: "https://gemini-proxy.yxcouc.workers.dev/v1beta" 
+  apiKey: process.env.API_KEY || ''
 });
 
 export const extractTaskFromImage = async (base64Image: string) => {
