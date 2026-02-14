@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ClipboardList, History, Plus } from 'lucide-react';
+import { ClipboardList, History, Plus, LayoutDashboard } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -29,6 +29,14 @@ const Layout: React.FC<LayoutProps> = ({ children, onAddClick }) => {
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t safe-area-bottom z-40">
         <div className="flex justify-around items-center h-16">
+          <NavLink 
+            to="/" 
+            end
+            className={({ isActive }) => `flex-1 flex flex-col items-center gap-1 transition-colors ${isActive ? 'text-blue-600' : 'text-slate-400'}`}
+          >
+            <LayoutDashboard size={22} />
+            <span className="text-[10px] font-medium uppercase tracking-wider">概览</span>
+          </NavLink>
           <NavLink 
             to="/tasks" 
             className={({ isActive }) => `flex-1 flex flex-col items-center gap-1 transition-colors ${isActive ? 'text-blue-600' : 'text-slate-400'}`}

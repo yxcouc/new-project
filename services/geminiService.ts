@@ -3,16 +3,14 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { Platform, ContentType } from "../types";
 
 // 初始化 Gemini AI 客户端
-// 密钥将严格从 process.env.API_KEY 获取，确保安全性
 const ai = new GoogleGenAI({ 
   apiKey: process.env.API_KEY || '',
-  // 如果您的网络环境需要使用 API 代理，可以在此配置 baseUrl
-  // 例如: baseUrl: "https://your-custom-proxy.com/v1beta"
+  baseUrl: "https://gemini-proxy.yxcouc.workers.dev/v1beta" 
 });
 
 export const extractTaskFromImage = async (base64Image: string) => {
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview', // 使用高性能且具备免费层级的 Flash 模型
+    model: 'gemini-3-flash-preview',
     contents: {
       parts: [
         {
@@ -22,7 +20,16 @@ export const extractTaskFromImage = async (base64Image: string) => {
           },
         },
         {
-          text: "Extract social media task details from this screenshot. Return JSON format with: platforms (array of strings, items must be one of: 抖音, 微博, 小红书, 视频号, 华为乾坤, 花粉俱乐部), title, types (array of strings, items one of: 图文, 视频), hashtags (array), quota (number), reward (string).",
+          text: `你是一个社交媒体任务助理。请从这张截图中提取任务信息。
+          要求：
+          1. 识别发布平台（如：抖音, 微博, 小红书, 视频号, 华为乾坤, 花粉俱乐部）。
+          2. 提取任务标题（中文）。
+          3. 识别内容形式（图文 或 视频）。
+          4. 提取必带的话题标签（Hashtags）。
+          5. 提取任务名额/数量。
+          6. 提取奖励描述（如：xx元/条，或 积分奖励）。
+          
+          请严格以 JSON 格式返回。`,
         },
       ],
     },
@@ -44,7 +51,6 @@ export const extractTaskFromImage = async (base64Image: string) => {
   });
 
   try {
-    // Gemini 3 系列直接通过 .text 属性获取结果
     const textResult = response.text || '';
     return JSON.parse(textResult);
   } catch (error) {
@@ -53,9 +59,6 @@ export const extractTaskFromImage = async (base64Image: string) => {
   }
 };
 
-/**
- * 智能解析文本中的链接，过滤掉多余的分享文案
- */
 export const parseSmartLink = (text: string): string => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const match = text.match(urlRegex);

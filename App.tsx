@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes, Route, useLocation, Navigate } from 'reac
 import Layout from './components/Layout';
 import TaskList from './views/TaskList';
 import PostHistory from './views/PostHistory';
+import Dashboard from './views/Dashboard';
 import TaskForm from './components/TaskForm';
 import PostForm from './components/PostForm';
 import { Task, Post, TaskStatus, PostStatus } from './types';
@@ -102,9 +103,10 @@ const AppContent: React.FC<{
   return (
     <Layout onAddClick={handleGlobalAdd}>
       <Routes>
-        <Route path="/" element={<Navigate to="/tasks" replace />} />
+        <Route path="/" element={<Dashboard tasks={tasks} posts={posts} />} />
         <Route path="/tasks" element={<TaskList tasks={tasks} posts={posts} onStatusChange={onTaskStatusChange} />} />
         <Route path="/history" element={<PostHistory posts={posts} tasks={tasks} onStatusChange={onPostStatusChange} />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       {showTaskForm && (
