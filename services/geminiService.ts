@@ -2,11 +2,17 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Platform, ContentType } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// 初始化 Gemini AI 客户端
+// 密钥将严格从 process.env.API_KEY 获取，确保安全性
+const ai = new GoogleGenAI({ 
+  apiKey: process.env.API_KEY || '',
+  // 如果您的网络环境需要使用 API 代理，可以在此配置 baseUrl
+  // 例如: baseUrl: "https://your-custom-proxy.com/v1beta"
+});
 
 export const extractTaskFromImage = async (base64Image: string) => {
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    model: 'gemini-3-flash-preview', // 使用高性能且具备免费层级的 Flash 模型
     contents: {
       parts: [
         {
@@ -38,13 +44,18 @@ export const extractTaskFromImage = async (base64Image: string) => {
   });
 
   try {
-    return JSON.parse(response.text);
+    // Gemini 3 系列直接通过 .text 属性获取结果
+    const textResult = response.text || '';
+    return JSON.parse(textResult);
   } catch (error) {
-    console.error("Failed to parse Gemini response:", error);
+    console.error("解析图片任务失败:", error);
     return null;
   }
 };
 
+/**
+ * 智能解析文本中的链接，过滤掉多余的分享文案
+ */
 export const parseSmartLink = (text: string): string => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const match = text.match(urlRegex);
