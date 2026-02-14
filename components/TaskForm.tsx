@@ -1,8 +1,7 @@
-
 import React, { useState, useRef } from 'react';
 import { X, Camera, Loader2, Check } from 'lucide-react';
-import { Platform, ContentType, Task, TaskStatus } from '../types';
-import { extractTaskFromImage } from '../services/geminiService';
+import { Platform, ContentType, Task, TaskStatus } from '../types.ts';
+import { extractTaskFromImage } from '../services/geminiService.ts';
 
 interface TaskFormProps {
   onClose: () => void;

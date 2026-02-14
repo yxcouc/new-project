@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { X, Copy, Link as LinkIcon, Check, Plus, Tag } from 'lucide-react';
-import { Task, Post, PostStatus } from '../types';
-import { parseSmartLink } from '../services/geminiService';
+import { Task, Post, PostStatus } from '../types.ts';
+import { parseSmartLink } from '../services/geminiService.ts';
 
 interface PostFormProps {
   tasks: Task[];
