@@ -1,7 +1,6 @@
-
 import React from 'react';
-import { Task, Post, PostStatus } from '../types';
-import { PLATFORM_CONFIG } from '../constants';
+import { Task, Post, PostStatus } from '../types.ts';
+import { PLATFORM_CONFIG } from '../constants.tsx';
 import { TrendingUp, CheckCircle2, AlertCircle, Banknote } from 'lucide-react';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell } from 'recharts';
 
@@ -15,15 +14,14 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, posts }) => {
   const completedPosts = posts.filter(p => p.status === PostStatus.COMPLETED);
   const pendingPosts = posts.filter(p => p.status === PostStatus.PENDING);
 
-  // Group posts by platform for chart
-  const platformStats = Object.values(PLATFORM_CONFIG).map((_, idx) => {
-    const platformName = Object.keys(PLATFORM_CONFIG)[idx];
+  const platformStats = Object.keys(PLATFORM_CONFIG).map((platformName) => {
+    if (platformName === 'default') return null;
     const count = posts.filter(p => {
       const task = tasks.find(t => t.id === p.taskId);
       return task?.platforms.includes(platformName);
     }).length;
     return { name: platformName, count };
-  }).filter(s => s.count > 0);
+  }).filter((s): s is { name: string; count: number } => s !== null && s.count > 0);
 
   return (
     <div className="space-y-6">
@@ -69,14 +67,11 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, posts }) => {
       )}
 
       <div className="space-y-3">
-        <h3 className="font-bold text-sm text-slate-500 uppercase flex justify-between">
-          活跃任务进度
-        </h3>
+        <h3 className="font-bold text-sm text-slate-500 uppercase">活跃任务进度</h3>
         {ongoingTasks.slice(0, 4).map(task => {
           const taskPosts = posts.filter(p => p.taskId === task.id);
           const completedCount = taskPosts.filter(p => p.status === PostStatus.COMPLETED).length;
           const pendingCount = taskPosts.filter(p => p.status === PostStatus.PENDING).length;
-          
           const completedWidth = Math.min(100, (completedCount / task.quota) * 100);
           const pendingWidth = Math.min(100 - completedWidth, (pendingCount / task.quota) * 100);
 
@@ -95,20 +90,17 @@ const Dashboard: React.FC<DashboardProps> = ({ tasks, posts }) => {
                   <p className="text-[10px] font-bold text-slate-400 uppercase">限额 {task.quota}</p>
                 </div>
               </div>
-              
               <div className="space-y-1.5">
                 <div className="flex justify-between text-[9px] font-bold uppercase">
                   <div className="flex gap-3">
                     <span className="text-emerald-500">已通过 {completedCount}</span>
                     <span className="text-amber-500">审核中 {pendingCount}</span>
                   </div>
-                  <span className="text-slate-400">
-                    {((completedCount + pendingCount) / task.quota * 100).toFixed(0)}%
-                  </span>
+                  <span className="text-slate-400">{Math.round(((completedCount + pendingCount) / task.quota) * 100)}%</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden flex">
-                  <div className="h-full bg-emerald-500 transition-all duration-700" style={{ width: `${completedWidth}%` }}></div>
-                  <div className="h-full bg-amber-400 transition-all duration-700" style={{ width: `${pendingWidth}%` }}></div>
+                  <div className="h-full bg-emerald-500" style={{ width: `${completedWidth}%` }}></div>
+                  <div className="h-full bg-amber-400" style={{ width: `${pendingWidth}%` }}></div>
                 </div>
               </div>
             </div>

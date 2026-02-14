@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Instagram, 
@@ -11,7 +10,7 @@ import {
   Clock, 
   XCircle 
 } from 'lucide-react';
-import { Platform, PostStatus } from './types';
+import { Platform, PostStatus } from './types.ts';
 
 export const PLATFORM_CONFIG: Record<string, { color: string; icon: React.ReactNode }> = {
   [Platform.DOUYIN]: { color: 'bg-black text-white', icon: <Video size={16} /> },

@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Task, TaskStatus, Post, PostStatus } from '../types';
-import { PLATFORM_CONFIG } from '../constants';
+import { Task, TaskStatus, Post, PostStatus } from '../types.ts';
+import { PLATFORM_CONFIG } from '../constants.tsx';
 import { Search, ChevronRight } from 'lucide-react';
 
 interface TaskListProps {
@@ -23,10 +22,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, posts, onStatusChange }) => 
     return matchesStatus && matchesSearch;
   });
 
-  const handleTaskClick = (taskId: string) => {
-    navigate(`/history?taskId=${taskId}`);
-  };
-
   return (
     <div className="space-y-4">
       <div className="sticky top-16 z-30 bg-slate-50 py-2 space-y-3">
@@ -45,9 +40,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, posts, onStatusChange }) => 
               key={s}
               onClick={() => setFilter(s as any)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
-                filter === s 
-                ? 'bg-blue-600 text-white border-blue-600 shadow-md' 
-                : 'bg-white text-slate-500 border-slate-200'
+                filter === s ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-slate-500 border-slate-200'
               }`}
             >
               {s === 'ALL' ? '全部' : s}
@@ -61,14 +54,13 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, posts, onStatusChange }) => 
           const taskPosts = posts.filter(p => p.taskId === task.id);
           const completedCount = taskPosts.filter(p => p.status === PostStatus.COMPLETED).length;
           const pendingCount = taskPosts.filter(p => p.status === PostStatus.PENDING).length;
-          
           const completedWidth = Math.min(100, (completedCount / task.quota) * 100);
           const pendingWidth = Math.min(100 - completedWidth, (pendingCount / task.quota) * 100);
 
           return (
             <div 
               key={task.id} 
-              onClick={() => handleTaskClick(task.id)}
+              onClick={() => navigate(`/history?taskId=${task.id}`)}
               className="bg-white rounded-3xl border shadow-sm overflow-hidden active:scale-[0.98] transition-transform cursor-pointer"
             >
               <div className="p-4 space-y-3">
@@ -85,37 +77,20 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, posts, onStatusChange }) => 
                   </div>
                   <ChevronRight size={18} className="text-slate-300" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm leading-tight mb-2">{task.title}</h3>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {task.types.map(t => (
-                      <span key={t} className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded">
-                        {t}
-                      </span>
-                    ))}
-                    {task.hashtags.map((h, i) => (
-                      <span key={i} className="text-[10px] text-blue-600 font-medium">{h.startsWith('#') ? h : `#${h}`}</span>
-                    ))}
+                <h3 className="font-bold text-sm leading-tight">{task.title}</h3>
+                <div className="space-y-1.5 bg-slate-50/50 p-2.5 rounded-2xl border border-slate-100">
+                  <div className="flex justify-between text-[9px] font-bold uppercase">
+                    <div className="flex gap-3">
+                      <span className="text-emerald-500">已通过 {completedCount}</span>
+                      <span className="text-amber-500">审核中 {pendingCount}</span>
+                    </div>
+                    <span className="text-slate-400">{completedCount + pendingCount} / {task.quota}</span>
                   </div>
-
-                  {/* Task Progress Section */}
-                  <div className="space-y-1.5 bg-slate-50/50 p-2.5 rounded-2xl border border-slate-100">
-                    <div className="flex justify-between text-[9px] font-bold uppercase">
-                      <div className="flex gap-3">
-                        <span className="text-emerald-500">已通过 {completedCount}</span>
-                        <span className="text-amber-500">审核中 {pendingCount}</span>
-                      </div>
-                      <span className="text-slate-400">
-                        {completedCount + pendingCount} / {task.quota}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden flex">
-                      <div className="h-full bg-emerald-500 transition-all duration-700" style={{ width: `${completedWidth}%` }}></div>
-                      <div className="h-full bg-amber-400 transition-all duration-700" style={{ width: `${pendingWidth}%` }}></div>
-                    </div>
+                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden flex">
+                    <div className="h-full bg-emerald-500" style={{ width: `${completedWidth}%` }}></div>
+                    <div className="h-full bg-amber-400" style={{ width: `${pendingWidth}%` }}></div>
                   </div>
                 </div>
-
                 <div className="flex items-center justify-between pt-2">
                   <div>
                     <p className="text-[9px] text-slate-400 font-bold uppercase">奖励</p>
